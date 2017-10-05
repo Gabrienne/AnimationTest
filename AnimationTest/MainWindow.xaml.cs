@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace AnimationTest
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.DataContext = new MainViewModel();
+        }
+
+        private void clickedMovie(object sender, RoutedEventArgs e)
+        {
+            ShowModal((sender as Button).DataContext as MovieItem);
+        }
+
+        private void ShowModal(MovieItem movie)
+        {
+            if (movie != null)
+            {
+                var window = new Modal(movie);
+                window.Owner = this;
+                var result = window.ShowDialog();
+            }
+        }
+    }
+}
