@@ -35,9 +35,8 @@ namespace AnimationTest
         {
             if (movie != null)
             {
-                var window = new Modal(movie);
-                window.Owner = this;
-                var result = window.ShowDialog();
+                modal.Movie = movie;
+                modal.Visibility = Visibility.Visible;
             }
         }
     }

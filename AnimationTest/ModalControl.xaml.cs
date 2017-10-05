@@ -20,48 +20,46 @@ namespace AnimationTest
     /// <summary>
     /// Interaction logic for Modal.xaml
     /// </summary>
-    public partial class Modal : Window
+    public partial class ModalControl : UserControl
     {
-
-        public Modal()
+        private MovieItem _movie;
+        public MovieItem Movie
+        {
+            get
+            {
+                return _movie;
+            }
+            set
+            {
+                _movie = value;
+                this.DataContext = _movie;
+            }
+        }
+        public ModalControl()
         {
             InitializeComponent();
+            IsVisibleChanged += DoStartupAnimation;
         }
 
-        public Modal(MovieItem movie)
+        private void DoStartupAnimation(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ThicknessAnimation animation = new ThicknessAnimation(new Thickness(200, 0, 0, 0), TimeSpan.FromMilliseconds(700));
+            descriptions.BeginAnimation(Control.MarginProperty, animation);
+        }
+
+        public ModalControl(MovieItem movie)
         {
             InitializeComponent();
             this.DataContext = movie;
-           // modalGrid.DataContext = movie;
         }
 
         private void closing(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-
-        protected override void OnContentRendered(EventArgs e)
-        {
-            base.OnContentRendered(e);
-            DoStartupAnimation();
-        }
-
-        private void DoStartupAnimation()
-        {
-            ThicknessAnimation animation = new ThicknessAnimation(new Thickness(200, 0, 0, 0), TimeSpan.FromMilliseconds(500));
-            descriptions.BeginAnimation(Control.MarginProperty, animation);
-        }
-
-        private void mouseEntered(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void mouseLeft(object sender, MouseEventArgs e)
-        {
-
+            this.Visibility = Visibility.Hidden;
         }
 
         bool allowMoveAnimation = true;
+
         private void mouseMoved(object sender, MouseEventArgs e)
         {
             if (allowMoveAnimation)

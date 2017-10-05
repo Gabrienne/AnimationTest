@@ -57,5 +57,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <Grid x:Name="paravan" Background="Black" Opacity=".5" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
+        <local:ModalControl x:Name="modal" Visibility="Hidden"/>
     </Grid>
 </Window>
