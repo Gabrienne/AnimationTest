@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnimationTest"
         mc:Ignorable="d"
-        Height="300" Foreground="Gray">
+        Height="300" Foreground="Gray" Width="500" >
     <Viewbox >
-        <Canvas Width="500" Height="300">
+        <Canvas Width="500" Height="300"  MouseLeave="easeOut" Background="Black" Opacity="0.1">
             <!-- The Viewport3D provides a rendering surface for 3-D visual content. -->
-            <Viewport3D ClipToBounds="False" Width="500" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Viewport3D ClipToBounds="False" Width="500" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1">
 
                 <!-- Defines the camera used to view the 3D object. -->
                 <Viewport3D.Camera>
@@ -20,7 +20,7 @@
 
                 <!-- The 3D models -->
                 <Viewport3D.Children>
-                    <Viewport2DVisual3D>
+                    <Viewport2DVisual3D x:Name="viewPort3d">
                         <Viewport2DVisual3D.Geometry>
                             <MeshGeometry3D
                                 TriangleIndices="0,1,2    2,3,0"

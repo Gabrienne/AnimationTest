@@ -58,38 +58,47 @@ namespace AnimationTest
             this.Visibility = Visibility.Hidden;
         }
 
-        bool allowMoveAnimation = true;
+        public bool easingIn = true;
 
         private void mouseMoved(object sender, MouseEventArgs e)
         {
-            if (allowMoveAnimation)
+            var pos = e.GetPosition(this);
+            var upperWeight = (3 * pos.X / 5 + pos.Y - 300) / 50;
+            if (easingIn)
             {
-                allowMoveAnimation = false;
-                var pos = e.GetPosition(this);
-                Debug.WriteLine("Mousie move!! " + pos.X + " " + pos.Y);
-                doRollover(pos);
-                allowMoveAnimation = true;
+                easeIn(upperWeight);
             }
             else
             {
-                Debug.WriteLine("blocked");
+                //Debug.WriteLine("Mousie move!! " + pos.X + " " + pos.Y);
+                Rotate(upperWeight);
             }
         }
 
-        private void doRollover(Point pos)
+        private void Rotate(double angle, double ms = 0)
         {
-            //  var ipot = Math.Pow(pos.X, 2) + Math.Pow(pos.Y, 2);
-            var upperWeight = pos.X + pos.Y - 280;
-            //if (upperWeight > 0)
-            {
-                // Debug.WriteLine("Upper weight : " + upperWeight);
-                //var skew = new SkewTransform(0 ,upperWeight / 50);
-                //modalGrid.RenderTransform = skew;
-               // var rotate = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 1, 0), upperWeight / 50));
-                //model3d.Transform = rotate;
+            DoubleAnimation angleResetAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(ms));
+            (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleResetAnimation);
+        }
 
-            }
-            
+        private void easeIn(Double angle)
+        {
+            //on mouse enter, ease in 200 ms
+            modalGrid.MouseMove -= mouseMoved;
+            DoubleAnimation angleAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(200));
+            angleAnimation.Completed += new EventHandler((sender2, e2) =>
+            {
+                easingIn = false;
+                modalGrid.MouseMove += mouseMoved;
+            });
+            (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleAnimation);
+        }
+
+        private void easeOut(object sender, MouseEventArgs e)
+        {
+            easingIn = true; //next time the mouse enters, animation should ease in
+           // var currentRotation = (int) ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Angle;
+            Rotate(0, 800);
         }
     }
 }
