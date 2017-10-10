@@ -7,9 +7,12 @@
         mc:Ignorable="d"
         Height="300" Foreground="Gray" Width="500" >
     <Viewbox >
-        <Canvas Width="500" Height="300"  MouseLeave="easeOut" Background="Black" Opacity="0.1">
+        <Canvas Width="500" Height="300"  MouseLeave="easeOut">
+            <Canvas.Background>
+                <SolidColorBrush Color="Black" Opacity=".1"/>
+            </Canvas.Background>
             <!-- The Viewport3D provides a rendering surface for 3-D visual content. -->
-            <Viewport3D ClipToBounds="False" Width="500" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1">
+            <Viewport3D x:Name="viewPort" ClipToBounds="False" Width="500" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1">
 
                 <!-- Defines the camera used to view the 3D object. -->
                 <Viewport3D.Camera>
@@ -28,7 +31,7 @@
                                 Positions="-0.5,-0.3,0     0.5,-0.3,0    0.5,0.3,0    -0.5,0.3,0" />
                         </Viewport2DVisual3D.Geometry>
                         <Viewport2DVisual3D.Material>
-                            <DiffuseMaterial Viewport2DVisual3D.IsVisualHostMaterial="True" Brush="Blue"/>
+                            <DiffuseMaterial Viewport2DVisual3D.IsVisualHostMaterial="True" Brush="Red"/>
                         </Viewport2DVisual3D.Material>
                         <Viewport2DVisual3D.Visual>
                             <Grid x:Name="modalGrid" MouseMove="mouseMoved">
@@ -61,7 +64,7 @@
                         <Viewport2DVisual3D.Transform>
                             <RotateTransform3D>
                                 <RotateTransform3D.Rotation>
-                                    <AxisAngleRotation3D Axis="1, 1, 0" Angle="0"/>
+                                    <AxisAngleRotation3D Axis="-1, -1, 0" Angle="0"/>
                                 </RotateTransform3D.Rotation>
                             </RotateTransform3D>
                         </Viewport2DVisual3D.Transform>

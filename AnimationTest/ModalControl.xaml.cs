@@ -43,7 +43,8 @@ namespace AnimationTest
 
         private void DoStartupAnimation(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ThicknessAnimation animation = new ThicknessAnimation(new Thickness(200, 0, 0, 0), TimeSpan.FromMilliseconds(700));
+            var factor = e.NewValue.Equals(true) ? 200 : 0;
+            ThicknessAnimation animation = new ThicknessAnimation(new Thickness(factor, 0, 0, 0), TimeSpan.FromMilliseconds(factor * 4));
             descriptions.BeginAnimation(Control.MarginProperty, animation);
         }
 
@@ -63,42 +64,55 @@ namespace AnimationTest
         private void mouseMoved(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
-            var upperWeight = (3 * pos.X / 5 + pos.Y - 300) / 50;
+            var xWeight = (pos.Y - 150) / 150;
+            var yWeight = (pos.X - 250) / 250;
+            var upperLeftWeight = (3 * pos.X / 5 + pos.Y - 300) / 50;
             if (easingIn)
             {
-                easeIn(upperWeight);
+                easeIn(xWeight, yWeight);
             }
             else
             {
                 //Debug.WriteLine("Mousie move!! " + pos.X + " " + pos.Y);
-                Rotate(upperWeight);
+                Rotate(xWeight, yWeight);
             }
         }
 
-        private void Rotate(double angle, double ms = 0)
+        private void Rotate(double x, double y, double ms = 0)
         {
-            DoubleAnimation angleResetAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(ms));
-            (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleResetAnimation);
+            var angle = Math.Max(Math.Abs(x), Math.Abs(y)) * 5 / 0.8;
+            DoubleAnimation angleAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(ms));
+            if (x != 0 && y != 0)
+            {
+                ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Axis = new Vector3D(x, y, 0);
+            }
+            (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleAnimation);
         }
 
-        private void easeIn(Double angle)
+        private void easeIn(double x, double y)
         {
+            var angle = Math.Max(Math.Abs(x), Math.Abs(y)) * 5 / 0.8;
             //on mouse enter, ease in 200 ms
             modalGrid.MouseMove -= mouseMoved;
-            DoubleAnimation angleAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(200));
+            DoubleAnimation angleAnimation = new DoubleAnimation(angle, TimeSpan.FromMilliseconds(300));
             angleAnimation.Completed += new EventHandler((sender2, e2) =>
             {
                 easingIn = false;
                 modalGrid.MouseMove += mouseMoved;
             });
+            ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Axis = new Vector3D(x, y, 0);
             (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleAnimation);
+            //((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).c = new Vector3D(
         }
+
+
+
 
         private void easeOut(object sender, MouseEventArgs e)
         {
             easingIn = true; //next time the mouse enters, animation should ease in
            // var currentRotation = (int) ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Angle;
-            Rotate(0, 800);
+            Rotate(0, 0, 800);
         }
     }
 }
