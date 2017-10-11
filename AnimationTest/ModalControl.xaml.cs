@@ -73,7 +73,6 @@ namespace AnimationTest
             }
             else
             {
-                //Debug.WriteLine("Mousie move!! " + pos.X + " " + pos.Y);
                 Rotate(xWeight, yWeight);
             }
         }
@@ -102,16 +101,11 @@ namespace AnimationTest
             });
             ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Axis = new Vector3D(x, y, 0);
             (viewPort3d.Transform as RotateTransform3D).Rotation.BeginAnimation(AxisAngleRotation3D.AngleProperty, angleAnimation);
-            //((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).c = new Vector3D(
         }
-
-
-
 
         private void easeOut(object sender, MouseEventArgs e)
         {
             easingIn = true; //next time the mouse enters, animation should ease in
-           // var currentRotation = (int) ((viewPort3d.Transform as RotateTransform3D).Rotation as AxisAngleRotation3D).Angle;
             Rotate(0, 0, 800);
         }
     }

@@ -9,7 +9,7 @@
     <Viewbox >
         <Canvas Width="500" Height="300"  MouseLeave="easeOut">
             <Canvas.Background>
-                <SolidColorBrush Color="Black" Opacity=".1"/>
+                <SolidColorBrush Color="Black" Opacity=".01"/>
             </Canvas.Background>
             <!-- The Viewport3D provides a rendering surface for 3-D visual content. -->
             <Viewport3D x:Name="viewPort" ClipToBounds="False" Width="500" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="1">
@@ -37,7 +37,8 @@
                             <Grid x:Name="modalGrid" MouseMove="mouseMoved">
                                 <Grid x:Name="poster" Width="200" Height="300" HorizontalAlignment="Left">
                                     <Grid.Background>
-                                        <ImageBrush ImageSource="{Binding PosterUri}" />
+                                        <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill"
+                                                    />
                                     </Grid.Background>
                                 </Grid>
 
@@ -56,7 +57,7 @@
                                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="20 0" VerticalAlignment="Stretch" Grid.Row="1"/>
                                     <StackPanel Orientation="Horizontal" Margin="0 0 0 0" Grid.Row="2">
                                         <Button Width="150" Height="50" Content="Close" Click="closing" Foreground="White" Background="DarkGoldenrod"/>
-                                        <Button Width="150" Height="50" Content="Watchlist" Click="closing" Foreground="DarkGoldenrod" Background="DarkSlateGray"/>
+                                        <Button Width="150" Height="50" Content="Action" Click="closing" Foreground="DarkGoldenrod" Background="DarkSlateGray"/>
                                     </StackPanel>
                                 </Grid>
                             </Grid>

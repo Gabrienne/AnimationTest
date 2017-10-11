@@ -20,10 +20,10 @@ namespace AnimationTest
 
         public MainViewModel()
         {
-            Movies.Add(new MovieItem() { Title = "Cinderella" } );
-            Movies.Add(new MovieItem() { Title = "HarryPotter" });
-            Movies.Add(new MovieItem() { Title = "Titanic" });
-            Movies.Add(new MovieItem() { Title = "Wonderwoman" });
+            Movies.Add(new MovieItem("Titanic"));
+            Movies.Add(new MovieItem("Cinderella"));
+            Movies.Add(new MovieItem("Wonderwoman"));
+           // Movies.Add(new MovieItem("Item4"));
         }
     }
 }

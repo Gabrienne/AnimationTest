@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AnimationTest"
         mc:Ignorable="d"
         Title="MainWindow">
-    <Grid Background="Black">
+    <Grid Background="GhostWhite">
         <ItemsControl x:Name="movieGrid" ItemsSource="{Binding Movies}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -15,29 +15,34 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="MovieItem">
-                    <Border Margin="4" Width="160" Height="260" x:Name="movieSlot">
+                    <Border Margin="4" MinWidth="160" Height="260" x:Name="movieSlot">
                         <Button Click="clickedMovie">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Width="150" Height="250" x:Name="moviePoster">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="{Binding PosterUri}" />
-                                        </Border.Background>
+                                        <Border.Effect>
+                                            <DropShadowEffect x:Name="moviePosterShadow" Color="Black"
+                                                                    Direction="270" ShadowDepth="4" Opacity="0.1" BlurRadius="20" RenderingBias="Performance"/>
+                                        </Border.Effect>
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualStateGroup.Transitions>
-                                                    <VisualTransition To="MouseOver" GeneratedDuration="0:0:0.2"/>
+                                                    <VisualTransition To="MouseOver" GeneratedDuration="0:0:0.1"/>
                                                     <VisualTransition To="Pressed" GeneratedDuration="0:0:0.1"/>
+                                                    <VisualTransition To="Normal" GeneratedDuration="0:0:0.2"/>
                                                 </VisualStateGroup.Transitions>
                                                 <VisualState x:Name="Normal" />
                                                 <VisualState x:Name="MouseOver">
                                                     <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
+                                                        Storyboard.TargetProperty="Opacity" To="1"/>
                                                         <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                    Storyboard.TargetProperty="Width" 
+                                                    Storyboard.TargetProperty="Width" Duration="0:0:0.2"
                                                     To="160" />
                                                         <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                    Storyboard.TargetProperty="Height" 
+                                                    Storyboard.TargetProperty="Height" Duration="0:0:0.2"
                                                     To="260" />
+
                                                     </Storyboard>
                                                 </VisualState>
                                                 <VisualState x:Name="Pressed">
@@ -49,11 +54,21 @@
                                                 </VisualState>
                                             </VisualStateGroup>
                                         </VisualStateManager.VisualStateGroups>
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill" />
+                                        </Border.Background>
+                                        <!--<TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                                   FontWeight="Bold" FontSize="20" Background="White" Foreground="Gray" Margin="2">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="4" Opacity="0.5" ShadowDepth="0"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>-->
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
                     </Border>
+                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
