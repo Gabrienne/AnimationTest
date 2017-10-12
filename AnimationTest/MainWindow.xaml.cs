@@ -26,17 +26,33 @@ namespace AnimationTest
             this.DataContext = new MainViewModel();
         }
 
-        private void clickedMovie(object sender, RoutedEventArgs e)
+        private void enterMovie(object sender, KeyEventArgs e)
         {
-            ShowModal((sender as Button).DataContext as MovieItem);
+            switch(e.Key)
+            {
+                case Key.Enter:
+                    ShowModal();
+                    break;
+            }
         }
 
-        private void ShowModal(MovieItem movie)
+        private void ShowModal()
         {
+            var movie = movieGrid.SelectedItem as MovieItem;
+            var movieListBoxItem = movieGrid.ItemContainerGenerator.ContainerFromItem(movie) as ListBoxItem;
+            Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
             if (movie != null)
             {
-                modal.Movie = movie;
-                modal.Visibility = Visibility.Visible;
+                modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth/2, this.ActualHeight/2));
+            }
+        }
+
+        private void movieGridVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue.Equals(false))
+            {
+                //does not work..
+                (movieGrid.SelectedItem as ListBoxItem)?.Focus();
             }
         }
     }

@@ -20,7 +20,7 @@ namespace AnimationTest
     /// <summary>
     /// Interaction logic for Modal.xaml
     /// </summary>
-    public partial class ModalControl : UserControl
+    public partial class ModalControl3D : UserControl
     {
         private MovieItem _movie;
         public MovieItem Movie
@@ -35,7 +35,7 @@ namespace AnimationTest
                 this.DataContext = _movie;
             }
         }
-        public ModalControl()
+        public ModalControl3D()
         {
             InitializeComponent();
             IsVisibleChanged += DoStartupAnimation;
@@ -48,7 +48,7 @@ namespace AnimationTest
             descriptions.BeginAnimation(Control.MarginProperty, animation);
         }
 
-        public ModalControl(MovieItem movie)
+        public ModalControl3D(MovieItem movie)
         {
             InitializeComponent();
             this.DataContext = movie;

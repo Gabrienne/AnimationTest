@@ -7,16 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow">
     <Grid Background="GhostWhite">
-        <ItemsControl x:Name="movieGrid" ItemsSource="{Binding Movies}">
-            <ItemsControl.ItemsPanel>
+        <ListBox x:Name="movieGrid" ItemsSource="{Binding Movies}" PreviewKeyDown="enterMovie" >
+            <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
                 </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
                 <DataTemplate DataType="MovieItem">
                     <Border Margin="4" MinWidth="160" Height="260" x:Name="movieSlot">
-                        <Button Click="clickedMovie">
+                        <Button IsDefault="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Width="150" Height="250" x:Name="moviePoster">
@@ -24,55 +24,46 @@
                                             <DropShadowEffect x:Name="moviePosterShadow" Color="Black"
                                                                     Direction="270" ShadowDepth="4" Opacity="0.1" BlurRadius="20" RenderingBias="Performance"/>
                                         </Border.Effect>
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup x:Name="CommonStates">
-                                                <VisualStateGroup.Transitions>
-                                                    <VisualTransition To="MouseOver" GeneratedDuration="0:0:0.1"/>
-                                                    <VisualTransition To="Pressed" GeneratedDuration="0:0:0.1"/>
-                                                    <VisualTransition To="Normal" GeneratedDuration="0:0:0.2"/>
-                                                </VisualStateGroup.Transitions>
-                                                <VisualState x:Name="Normal" />
-                                                <VisualState x:Name="MouseOver">
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
-                                                        Storyboard.TargetProperty="Opacity" To="1"/>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                    Storyboard.TargetProperty="Width" Duration="0:0:0.2"
-                                                    To="160" />
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                    Storyboard.TargetProperty="Height" Duration="0:0:0.2"
-                                                    To="260" />
-
-                                                    </Storyboard>
-                                                </VisualState>
-                                                <VisualState x:Name="Pressed">
-                                                    <!--<Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                    Storyboard.TargetProperty="Width" 
-                                                    To="255" />
-                                                    </Storyboard>-->
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
                                         <Border.Background>
                                             <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill" />
                                         </Border.Background>
-                                        <!--<TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                                                   FontWeight="Bold" FontSize="20" Background="White" Foreground="Gray" Margin="2">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="4" Opacity="0.5" ShadowDepth="0"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>-->
                                     </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsDefault" Value="True" >
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
+                                                            Storyboard.TargetProperty="Opacity" To="1"/>
+                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
+                                                            Storyboard.TargetProperty="Width" Duration="0:0:0.2" To="160" />
+                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
+                                                            Storyboard.TargetProperty="Height" Duration="0:0:0.2" To="260" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
+                                                            Storyboard.TargetProperty="Opacity" To="0.1"/>
+                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
+                                                            Storyboard.TargetProperty="Width" Duration="0:0:0.2" To="150" />
+                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
+                                                            Storyboard.TargetProperty="Height" Duration="0:0:0.2" To="250" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
                     </Border>
-                    
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <Grid x:Name="paravan" Background="Black" Opacity=".5" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
-        <local:ModalControl x:Name="modal" Visibility="Hidden"/>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Grid x:Name="paravan" Background="Black" Opacity=".3" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
+        <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>

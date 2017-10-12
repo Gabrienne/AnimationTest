@@ -55,8 +55,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ModalControl.xaml.cs">
+    <Compile Include="View\ModalControl.xaml.cs">
       <DependentUpon>ModalControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ModalControl3D.xaml.cs">
+      <DependentUpon>ModalControl3D.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
@@ -72,7 +75,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ModalControl.xaml">
+    <Page Include="View\ModalControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ModalControl3D.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

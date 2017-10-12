@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AnimationTest.ModalControl"
+﻿<UserControl x:Class="AnimationTest.ModalControl3D"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -35,6 +35,7 @@
                         </Viewport2DVisual3D.Material>
                         <Viewport2DVisual3D.Visual>
                             <Grid x:Name="modalGrid" MouseMove="mouseMoved">
+                                <!--place inside this grid all content-->
                                 <Grid x:Name="poster" Width="200" Height="300" HorizontalAlignment="Left">
                                     <Grid.Background>
                                         <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill"
