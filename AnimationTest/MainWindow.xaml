@@ -8,6 +8,7 @@
         Title="MainWindow">
     <Grid Background="GhostWhite">
         <ListBox x:Name="movieGrid" ItemsSource="{Binding Movies}" PreviewKeyDown="enterMovie" >
+            
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
@@ -15,11 +16,12 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="MovieItem">
-                    <Border Margin="4" MinWidth="160" Height="260" x:Name="movieSlot">
-                        <Button IsDefault="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}">
+                    <Border Margin="4" Width="210" Height="310" x:Name="movieSlot">
+                        <Button >
+                            <!--IsDefault="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}">-->
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border Width="150" Height="250" x:Name="moviePoster">
+                                    <Border Width="200" Height="300" x:Name="moviePoster">
                                         <Border.Effect>
                                             <DropShadowEffect x:Name="moviePosterShadow" Color="Black"
                                                                     Direction="270" ShadowDepth="4" Opacity="0.1" BlurRadius="20" RenderingBias="Performance"/>
@@ -28,34 +30,6 @@
                                             <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill" />
                                         </Border.Background>
                                     </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsDefault" Value="True" >
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
-                                                            Storyboard.TargetProperty="Opacity" To="1"/>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                            Storyboard.TargetProperty="Width" Duration="0:0:0.2" To="160" />
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                            Storyboard.TargetProperty="Height" Duration="0:0:0.2" To="260" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePosterShadow" Duration="0:0:0.1"
-                                                            Storyboard.TargetProperty="Opacity" To="0.1"/>
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                            Storyboard.TargetProperty="Width" Duration="0:0:0.2" To="150" />
-                                                        <DoubleAnimation Storyboard.TargetName="moviePoster"
-                                                            Storyboard.TargetProperty="Height" Duration="0:0:0.2" To="250" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
@@ -63,7 +37,10 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Grid x:Name="paravan" Background="Black" Opacity=".3" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
-        <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Grid x:Name="paravan" Background="Black" Opacity=".1" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
+        <Border Margin="10">
+            <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Border>
+        
     </Grid>
 </Window>

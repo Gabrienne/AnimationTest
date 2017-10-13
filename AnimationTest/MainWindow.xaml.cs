@@ -24,6 +24,12 @@ namespace AnimationTest
         {
             InitializeComponent();
             this.DataContext = new MainViewModel();
+            this.Loaded += setFocus;
+        }
+
+        private void setFocus(object sender, RoutedEventArgs e)
+        {
+            getSelectedMovieItemOrDefault().Focus();
         }
 
         private void enterMovie(object sender, KeyEventArgs e)
@@ -38,22 +44,35 @@ namespace AnimationTest
 
         private void ShowModal()
         {
-            var movie = movieGrid.SelectedItem as MovieItem;
-            var movieListBoxItem = movieGrid.ItemContainerGenerator.ContainerFromItem(movie) as ListBoxItem;
-            Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
-            if (movie != null)
+            try
             {
-                modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth/2, this.ActualHeight/2));
+                Keyboard.ClearFocus();
+                
+                var movieListBoxItem = getSelectedMovieItemOrDefault();
+                var movie = movieListBoxItem.Content as MovieItem;
+                movieListBoxItem.Visibility = Visibility.Hidden;
+                Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
+                if (movie != null)
+                {
+                    modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth / 2, this.ActualHeight / 2));
+                }
             }
+            catch { }
         }
 
         private void movieGridVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue.Equals(false))
             {
-                //does not work..
-                (movieGrid.SelectedItem as ListBoxItem)?.Focus();
+                (movieGrid.ItemContainerGenerator.ContainerFromItem(modal.DataContext) as ListBoxItem).Visibility = Visibility.Visible;
+                setFocus(sender, new RoutedEventArgs());
             }
+        }
+
+        private ListBoxItem getSelectedMovieItemOrDefault()
+        {
+            var index = movieGrid.SelectedIndex >= 0 ? movieGrid.SelectedIndex : 0;
+            return movieGrid.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
         }
     }
 }
