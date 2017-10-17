@@ -14,7 +14,7 @@ namespace AnimationTest
 {
     public class MovieItem : ViewModelBase
     {
-        public static Uri POSTER_NOT_FOUND = new Uri("pack://application:,,,/Resources/ImgNotFound.jpg");
+        public static Uri NOT_FOUND = new Uri("pack://application:,,,/Resources/ImgNotFound.jpg");
 
         public MovieItem(string title)
         {
@@ -67,10 +67,31 @@ namespace AnimationTest
                     }
                     catch
                     {
-                        _posterUri = POSTER_NOT_FOUND;
+                        _posterUri = NOT_FOUND;
                     }
                 }
                 return _posterUri;
+            }
+        }
+
+        private Uri _backgroundUri;
+        public Uri BackgroundUri
+        {
+            get
+            {
+                if (_backgroundUri == null)
+                {
+                    _backgroundUri = new Uri("pack://application:,,,/Resources/background.jpg");
+                    try
+                    {
+                        var stream = App.GetResourceStream(_backgroundUri);
+                    }
+                    catch
+                    {
+                        _backgroundUri = NOT_FOUND;
+                    }
+                }
+                return _backgroundUri;
             }
         }
     }

@@ -4,43 +4,147 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnimationTest"
+        xmlns:anim="clr-namespace:System.Windows.Media.Animation"
         mc:Ignorable="d"
-        Title="MainWindow">
-    <Grid Background="GhostWhite">
-        <ListBox x:Name="movieGrid" ItemsSource="{Binding Movies}" PreviewKeyDown="enterMovie" >
+        Title="MainWindow" Background="Black">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush x:Name="img_background" ImageSource="{Binding SelectedMovie.BackgroundUri, NotifyOnTargetUpdated=True}"  Stretch="UniformToFill"/>
+        </Grid.Background>
+        
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" >
             
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="MovieItem">
-                    <Border Margin="4" Width="210" Height="310" x:Name="movieSlot">
-                        <Button >
-                            <!--IsDefault="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}">-->
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Width="200" Height="300" x:Name="moviePoster">
-                                        <Border.Effect>
-                                            <DropShadowEffect x:Name="moviePosterShadow" Color="Black"
-                                                                    Direction="270" ShadowDepth="4" Opacity="0.1" BlurRadius="20" RenderingBias="Performance"/>
-                                        </Border.Effect>
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill" />
-                                        </Border.Background>
+            <StackPanel Orientation="Horizontal" Margin="40" >
+                <Button Click="click_play" Margin="40 0">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border BorderThickness="2" BorderBrush="Gold" CornerRadius="4" Width="90" Height="40">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Play}" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button Click="click_trailer" Foreground="White" Background="Gray" Opacity="0.6">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border CornerRadius="4" BorderThickness="0" Width="90" Height="40" Background="{TemplateBinding Background}">
+                                <TextBlock Text="TRAILER" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" Foreground="White" FontSize="16"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+            
+            <ListView x:Name="movieGrid" ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}" PreviewKeyDown="keyDown" Background="Transparent"
+                 Height="350" BorderThickness="0"
+                 SelectionChanged="movieSelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel VerticalAlignment="Bottom"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="MovieItem">
+                        <Border Margin="4" x:Name="movieSlot" VerticalAlignment="Bottom">
+                            <Button >
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Width="200" Height="300" x:Name="moviePoster">
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding PosterUri}" Stretch="UniformToFill"/>
+                                            </Border.Background>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition To="MouseOver" GeneratedDuration="0:0:0.1"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState Name="MouseOver">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="250" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState Name="Normal">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="200" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" >
+                                        <ContentPresenter ContentSource="Content"  />
                                     </Border>
                                 </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Grid x:Name="paravan" Background="Black" Opacity=".1" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
-        <Border Margin="10">
-            <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        </Border>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <TranslateTransform Y="30"/>
+                            </Setter.Value>
+                        </Setter>
+
+                        <!--Triggers-->
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1.1" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1.1" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1" Duration="0:0:0.2" >
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </Style.Triggers>
+
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+        </StackPanel>
         
     </Grid>
 </Window>

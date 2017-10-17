@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -32,47 +33,107 @@ namespace AnimationTest
             getSelectedMovieItemOrDefault().Focus();
         }
 
-        private void enterMovie(object sender, KeyEventArgs e)
+        private ListBoxItem getSelectedMovieItemOrDefault()
         {
-            switch(e.Key)
-            {
-                case Key.Enter:
-                    ShowModal();
-                    break;
-            }
+            var index = movieGrid.SelectedIndex >= 0 ? movieGrid.SelectedIndex : 0;
+            return getMovieFromIndex(index);
         }
 
-        private void ShowModal()
+        private ListBoxItem getMovieFromIndex(int index)
         {
+            return movieGrid.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
+        }
+
+        
+
+        private void movieSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var fadeOutAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(400));
+            fadeOutAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
+            fadeOutAnimation.Completed += new EventHandler((sender2, e2) =>
+            {
+                var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(400));
+                fadeInAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+                img_background.BeginAnimation(Brush.OpacityProperty, fadeInAnimation);
+            });
+            img_background.BeginAnimation(Brush.OpacityProperty, fadeOutAnimation);
+
+            //pre selection animation
+            var crt_index = movieGrid.SelectedIndex;
+            var preSelectionAnimation = new DoubleAnimation(10, TimeSpan.FromMilliseconds(200));
+            preSelectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+
+            var deselectionAnimation = new DoubleAnimation(30, TimeSpan.FromMilliseconds(200));
+            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+
+            var selectionAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(200));
+            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+
             try
             {
-                Keyboard.ClearFocus();
-                
-                var movieListBoxItem = getSelectedMovieItemOrDefault();
-                var movie = movieListBoxItem.Content as MovieItem;
-                movieListBoxItem.Visibility = Visibility.Hidden;
-                Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
-                if (movie != null)
+                ApplyRenderTransformYToPrevious(crt_index - 1, deselectionAnimation);
+                ApplyRenderTransformYToPrevious(crt_index, preSelectionAnimation);
+                ApplyRenderTransformYToNext(crt_index, preSelectionAnimation);
+                ApplyRenderTransformYToNext(crt_index + 1, deselectionAnimation);
+                var crt_item = getMovieFromIndex(crt_index);
+                if (crt_item.RenderTransform.IsFrozen)
                 {
-                    modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth / 2, this.ActualHeight / 2));
+                    crt_item.RenderTransform = crt_item.RenderTransform.CloneCurrentValue();
                 }
+                crt_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, selectionAnimation);
             }
             catch { }
         }
 
-        private void movieGridVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void ApplyRenderTransformYToPrevious(int index, DoubleAnimation animation)
         {
-            if (e.NewValue.Equals(false))
+            if (index > 0)
             {
-                (movieGrid.ItemContainerGenerator.ContainerFromItem(modal.DataContext) as ListBoxItem).Visibility = Visibility.Visible;
-                setFocus(sender, new RoutedEventArgs());
+                var prev_item = getMovieFromIndex(index - 1);
+                if (prev_item.RenderTransform.IsFrozen)
+                {
+                    prev_item.RenderTransform = prev_item.RenderTransform.CloneCurrentValue();
+                }
+                prev_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
             }
         }
 
-        private ListBoxItem getSelectedMovieItemOrDefault()
+        private void ApplyRenderTransformYToNext(int index, DoubleAnimation animation)
         {
-            var index = movieGrid.SelectedIndex >= 0 ? movieGrid.SelectedIndex : 0;
-            return movieGrid.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
+            if (index < movieGrid.Items.Count - 1)
+            {
+                var next_item = getMovieFromIndex(index + 1);
+                if (next_item.RenderTransform.IsFrozen)
+                {
+                    next_item.RenderTransform = next_item.RenderTransform.CloneCurrentValue();
+                }
+                next_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
+            }
+        }
+
+        private void click_play(object sender, RoutedEventArgs e)
+        {
+            DoEnterAction();
+        }
+
+        private void keyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    DoEnterAction();
+                    break;
+            }
+        }
+
+        private void DoEnterAction()
+        {
+            //implement Enter key Action
+        }
+
+        private void click_trailer(object sender, RoutedEventArgs e)
+        {
+            //implement trailer action
         }
     }
 }

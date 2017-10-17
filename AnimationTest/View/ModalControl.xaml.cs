@@ -40,6 +40,7 @@ namespace AnimationTest
             DoubleAnimation scaleAnimation = new DoubleAnimation(0.66, 1, duration);
             ThicknessAnimation posterTranslation = new ThicknessAnimation(startup, finish, duration);
             DoubleAnimation descriptionPopUp = new DoubleAnimation(300, 600, duration);
+            posterTranslation.EasingFunction = new CubicEase();
 
             posterTranslation.Completed += new EventHandler((sender2, e2) =>
             {
