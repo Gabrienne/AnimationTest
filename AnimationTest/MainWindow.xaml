@@ -9,7 +9,8 @@
         Title="MainWindow" Background="Black">
     <Grid>
         <Grid.Background>
-            <ImageBrush x:Name="img_background" ImageSource="{Binding SelectedMovie.BackgroundUri, NotifyOnTargetUpdated=True}"  Stretch="UniformToFill"/>
+            <ImageBrush x:Name="img_background" Stretch="UniformToFill"/>
+                        <!--ImageSource="{Binding SelectedMovie.BackgroundUri,UpdateSourceTrigger=Explicit}"  Stretch="UniformToFill"/>-->
         </Grid.Background>
         
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" >
@@ -60,23 +61,6 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualStateGroup.Transitions>
-                                        <VisualTransition To="MouseOver" GeneratedDuration="0:0:0.1"/>
-                                    </VisualStateGroup.Transitions>
-                                    <VisualState Name="MouseOver">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="250" Duration="0:0:0.1"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState Name="Normal">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="200" Duration="0:0:0.1"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -108,12 +92,12 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1.1" Duration="0:0:0.2">
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1.1" Duration="0:0:0.4">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseIn"/>
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1.1" Duration="0:0:0.2">
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1.1" Duration="0:0:0.4">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseIn"/>
                                                 </DoubleAnimation.EasingFunction>
@@ -124,12 +108,12 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1" Duration="0:0:0.2" >
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" To="1" Duration="0:0:0.4" >
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut"/>
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1" Duration="0:0:0.2">
+                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" To="1" Duration="0:0:0.4">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut"/>
                                                 </DoubleAnimation.EasingFunction>

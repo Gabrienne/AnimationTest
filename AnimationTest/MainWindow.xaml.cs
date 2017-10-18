@@ -48,26 +48,28 @@ namespace AnimationTest
 
         private void movieSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var fadeOutAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(400));
+            var crt_index = movieGrid.SelectedIndex;
+            var fadeOutAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(500));
             fadeOutAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
             fadeOutAnimation.Completed += new EventHandler((sender2, e2) =>
             {
-                var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(400));
+                img_background.ImageSource = new BitmapImage((movieGrid.SelectedItem as MovieItem).PosterUri);
+                var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(500));
                 fadeInAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
                 img_background.BeginAnimation(Brush.OpacityProperty, fadeInAnimation);
             });
             img_background.BeginAnimation(Brush.OpacityProperty, fadeOutAnimation);
 
             //pre selection animation
-            var crt_index = movieGrid.SelectedIndex;
-            var preSelectionAnimation = new DoubleAnimation(10, TimeSpan.FromMilliseconds(200));
-            preSelectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+            
+            var preSelectionAnimation = new DoubleAnimation(10, TimeSpan.FromMilliseconds(400));
+            preSelectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
-            var deselectionAnimation = new DoubleAnimation(30, TimeSpan.FromMilliseconds(200));
-            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+            var deselectionAnimation = new DoubleAnimation(30, TimeSpan.FromMilliseconds(400));
+            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
-            var selectionAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(200));
-            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+            var selectionAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(400));
+            deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
             try
             {
@@ -75,12 +77,7 @@ namespace AnimationTest
                 ApplyRenderTransformYToPrevious(crt_index, preSelectionAnimation);
                 ApplyRenderTransformYToNext(crt_index, preSelectionAnimation);
                 ApplyRenderTransformYToNext(crt_index + 1, deselectionAnimation);
-                var crt_item = getMovieFromIndex(crt_index);
-                if (crt_item.RenderTransform.IsFrozen)
-                {
-                    crt_item.RenderTransform = crt_item.RenderTransform.CloneCurrentValue();
-                }
-                crt_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, selectionAnimation);
+                ApplyRenderTransformYToNext(crt_index - 1, selectionAnimation);
             }
             catch { }
         }
