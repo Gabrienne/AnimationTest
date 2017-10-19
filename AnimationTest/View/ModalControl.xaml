@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AnimationTest"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="400">
+             d:DesignHeight="300" d:DesignWidth="300" Width="300">
     <Grid  Width="600" Height="450">
         <Grid x:Name="poster" Width="300" Height="450" HorizontalAlignment="Left">
             <Grid.Background>
@@ -13,7 +13,7 @@
             </Grid.Background>
         </Grid>
 
-        <Grid x:Name="descriptions" Background="FloralWhite" Width="300" Margin="300 0 0 0" HorizontalAlignment="Right" Visibility="Collapsed">
+        <Grid x:Name="descriptions" Background="FloralWhite" Width="300" Margin="300 0 0 0" HorizontalAlignment="Right">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -32,9 +32,15 @@
             </StackPanel>
         </Grid>
 
-
-        <Grid.RenderTransform>
-            <ScaleTransform x:Name="scaleTranform" ScaleX="1" ScaleY="1"/>
-        </Grid.RenderTransform>
+        
         </Grid>
+    <UserControl.RenderTransform>
+        <TransformGroup>
+            <ScaleTransform x:Name="scaleTranform" ScaleX="1" ScaleY="1"/>
+            <TranslateTransform x:Name="translateTransform" X="0" Y="0"/>
+        </TransformGroup>
+    </UserControl.RenderTransform>
+    <UserControl.Effect>
+        <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.8"/>
+    </UserControl.Effect>
 </UserControl>

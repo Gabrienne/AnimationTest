@@ -10,7 +10,6 @@
     <Grid>
         <Grid.Background>
             <ImageBrush x:Name="img_background" Stretch="UniformToFill"/>
-                        <!--ImageSource="{Binding SelectedMovie.BackgroundUri,UpdateSourceTrigger=Explicit}"  Stretch="UniformToFill"/>-->
         </Grid.Background>
         
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" >
@@ -127,8 +126,10 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-
         </StackPanel>
-        
+        <Grid x:Name="paravan" Background="Black" Opacity=".4" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
+        <Border Margin="10">
+            <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Border>
     </Grid>
 </Window>

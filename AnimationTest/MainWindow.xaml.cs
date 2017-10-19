@@ -53,7 +53,7 @@ namespace AnimationTest
             fadeOutAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
             fadeOutAnimation.Completed += new EventHandler((sender2, e2) =>
             {
-                img_background.ImageSource = new BitmapImage((movieGrid.SelectedItem as MovieItem).PosterUri);
+                img_background.ImageSource = new BitmapImage((movieGrid.SelectedItem as MovieItem).BackgroundUri);
                 var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(500));
                 fadeInAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
                 img_background.BeginAnimation(Brush.OpacityProperty, fadeInAnimation);
@@ -125,12 +125,35 @@ namespace AnimationTest
 
         private void DoEnterAction()
         {
-            //implement Enter key Action
+            try
+            {
+                Keyboard.ClearFocus();
+
+                var movieListBoxItem = getSelectedMovieItemOrDefault();
+                var movie = movieListBoxItem.Content as MovieItem;
+                movieListBoxItem.Visibility = Visibility.Hidden;
+                Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
+                if (movie != null)
+                {
+                   // modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth / 2, this.ActualHeight / 2));
+                    modal.AnimateIn(movieListBoxItem, this);
+                }
+            }
+            catch { }
         }
 
         private void click_trailer(object sender, RoutedEventArgs e)
         {
             //implement trailer action
+        }
+
+        private void movieGridVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue.Equals(false))
+            {
+                (movieGrid.ItemContainerGenerator.ContainerFromItem(modal.DataContext) as ListBoxItem).Visibility = Visibility.Visible;
+                setFocus(sender, new RoutedEventArgs());
+            }
         }
     }
 }

@@ -21,73 +21,116 @@ namespace AnimationTest
     /// </summary>
     public partial class ModalControl : UserControl
     {
-        Point mainWindowAnchor = new Point(0, 0);
+        ListBoxItem mainWindowAnchor = null;
 
         public ModalControl()
         {
             InitializeComponent();
         }
 
-        public void AnimateIn(MovieItem movie, Point fromPoint, Point toPoint)
-        {
-            this.DataContext = movie;
-            mainWindowAnchor = fromPoint;
-            var upperLeft = new Point(toPoint.X - 300, toPoint.Y - 275); //we need the upper left corner of the final window
-            var duration = TimeSpan.FromMilliseconds(800);
-            var startup = new Thickness(mainWindowAnchor.X, mainWindowAnchor.Y, 0, 0);
-            var finish = new Thickness(upperLeft.X, upperLeft.Y, 0, 0);
-
-            DoubleAnimation scaleAnimation = new DoubleAnimation(0.66, 1, duration);
-            ThicknessAnimation posterTranslation = new ThicknessAnimation(startup, finish, duration);
-            DoubleAnimation descriptionPopUp = new DoubleAnimation(300, 600, duration);
-            posterTranslation.EasingFunction = new CubicEase();
-
-            posterTranslation.Completed += new EventHandler((sender2, e2) =>
-            {
-               
-                descriptionPopUp.Completed += new EventHandler((sender3, e3) =>
-                {
-                    //ensure initial keyboard focus
-                    btn_Close.Focus();
-                });
-
-                this.BeginAnimation(Control.WidthProperty, descriptionPopUp);
-                descriptions.Visibility = Visibility.Visible;
-
-            });
-
-            this.BeginAnimation(Control.MarginProperty, posterTranslation);
-            scaleTranform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-            scaleTranform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-            this.Visibility = Visibility.Visible;
-
-        }
-
-
         private void AnimateOut(object sender, RoutedEventArgs e)
         {
             Keyboard.ClearFocus();
             var duration = TimeSpan.FromMilliseconds(1000);
-            var finish = new Thickness(mainWindowAnchor.X, mainWindowAnchor.Y, 0, 0);
+            double scaleFactor = poster.Height / mainWindowAnchor.Height;
 
-            DoubleAnimation descriptionPopOut = new DoubleAnimation(300, duration);
-            DoubleAnimation scaleAnimation = new DoubleAnimation(1, 0.66, duration);
-            ThicknessAnimation posterTranslation = new ThicknessAnimation(finish, duration);
-
-            descriptionPopOut.Completed += new EventHandler((sender2, e2) =>
+            ExpandStoryBoard.Completed += new EventHandler((sender2, e2) =>
             {
-                descriptions.Visibility = Visibility.Visible;
-                scaleTranform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-                scaleTranform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-                this.BeginAnimation(Control.MarginProperty, posterTranslation);
+                PopupStoryboard.Completed += new EventHandler((sender3, e3) =>
+                {
+                    this.Visibility = Visibility.Hidden; //this hides the poster and triggers focus on main menu
+                });
+
+                //modal control expansion
+                ReverseStoryBoard(PopupStoryboard);
             });
 
-            posterTranslation.Completed += new EventHandler((sender2, e2) =>
-            {
-                this.Visibility = Visibility.Hidden;
-            });
-
-            this.BeginAnimation(Control.WidthProperty, descriptionPopOut);
+            ReverseStoryBoard(ExpandStoryBoard);
         }
+
+        internal void AnimateIn(ListBoxItem movieListBoxItem, MainWindow mainWindow)
+        {
+            mainWindowAnchor = movieListBoxItem;
+            this.DataContext = movieListBoxItem.Content as MovieItem;
+
+            Storyboard popUp = createPopupStoryboard(movieListBoxItem, mainWindow);
+            popUp.Completed += new EventHandler((sender2, e2) =>
+            {
+                //modal control expansion
+                //descriptions.Visibility = Visibility.Visible;
+                var expandStory = createExpandStoryboard();
+                expandStory.Completed += new EventHandler((sender3, e3) =>
+                {
+                    //ensure initial keyboard focus
+                    btn_Close.Focus();
+                });
+                expandStory.Begin();
+            });
+
+            popUp.Begin();
+            this.Visibility = Visibility.Visible;
+        }
+
+        private Storyboard createPopupStoryboard(ListBoxItem movieListBoxItem, MainWindow mainWindow)
+        {
+            Point fromPoint = movieListBoxItem.TransformToAncestor(mainWindow).Transform(new Point(0, 0));
+            Point toPoint = new Point((mainWindow.ActualWidth - posterWidth) / 2, (mainWindow.ActualHeight - poster.Height) / 2);
+            DoubleAnimation posterXTranslation = createDoubleAnimation(fromPoint.X, toPoint.X, defaultDuration);
+            DoubleAnimation posterYTranslation = createDoubleAnimation(fromPoint.Y, toPoint.Y, defaultDuration);
+            double scaleYFactor = movieListBoxItem.ActualHeight / posterHeight;
+            DoubleAnimation scaleYAnimation = createDoubleAnimation(scaleYFactor, 1, defaultDuration);
+            double scaleXFactor = movieListBoxItem.ActualWidth / posterWidth;
+            DoubleAnimation scaleXAnimation = createDoubleAnimation(scaleXFactor, 1, defaultDuration);
+
+            var popupStory = new Storyboard();
+            Storyboard.SetTarget(popupStory, this);
+            popupStory.Children.Add(posterXTranslation);
+            popupStory.Children.Add(posterYTranslation);
+            Storyboard.SetTargetProperty(posterXTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
+            Storyboard.SetTargetProperty(posterYTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.Y)"));
+            popupStory.Children.Add(scaleXAnimation);
+            popupStory.Children.Add(scaleYAnimation);
+            Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleX)"));
+            Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleY)"));
+            PopupStoryboard = popupStory.Clone();
+            return popupStory;
+        }
+
+        private Storyboard createExpandStoryboard()
+        {
+            var expandStory = new Storyboard();
+            Storyboard.SetTarget(expandStory, this);
+            DoubleAnimation descriptionPopUp = createDoubleAnimation(posterWidth, modalWidth, defaultDuration);
+            DoubleAnimation posterXTranslation = createDoubleAnimation(translateTransform.X, translateTransform.X - posterWidth / 2, defaultDuration);
+            expandStory.Children.Add(descriptionPopUp);
+            expandStory.Children.Add(posterXTranslation);
+            Storyboard.SetTargetProperty(descriptionPopUp, new PropertyPath(Control.WidthProperty));
+            Storyboard.SetTargetProperty(posterXTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
+            ExpandStoryBoard = expandStory;
+            return expandStory;
+        }
+
+        private DoubleAnimation createDoubleAnimation(double from, double to, TimeSpan duration, EasingMode easeMode = EasingMode.EaseOut)
+        {
+            return new DoubleAnimation(from, to, duration) { EasingFunction = new CubicEase() { EasingMode = easeMode } };
+        }
+
+        private void ReverseStoryBoard(Storyboard anim)
+        {
+            anim.AutoReverse = true;
+            anim.Begin();
+            anim.Pause();
+            anim.Seek(defaultDuration);
+            anim.Resume();
+        }
+
+        #region Members
+        Storyboard PopupStoryboard = null;
+        Storyboard ExpandStoryBoard = null;
+        TimeSpan defaultDuration = TimeSpan.FromMilliseconds(1200);  //animations duration
+        int posterWidth = 300;
+        int posterHeight = 450;
+        int modalWidth = 600;
+        #endregion
     }
 }
