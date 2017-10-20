@@ -48,20 +48,9 @@ namespace AnimationTest
 
         private void movieSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var crt_index = movieGrid.SelectedIndex;
-            var fadeOutAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(500));
-            fadeOutAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
-            fadeOutAnimation.Completed += new EventHandler((sender2, e2) =>
-            {
-                img_background.ImageSource = new BitmapImage((movieGrid.SelectedItem as MovieItem).BackgroundUri);
-                var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(500));
-                fadeInAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
-                img_background.BeginAnimation(Brush.OpacityProperty, fadeInAnimation);
-            });
-            img_background.BeginAnimation(Brush.OpacityProperty, fadeOutAnimation);
+            handleBackground();
 
             //pre selection animation
-            
             var preSelectionAnimation = new DoubleAnimation(10, TimeSpan.FromMilliseconds(400));
             preSelectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
@@ -71,6 +60,7 @@ namespace AnimationTest
             var selectionAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(400));
             deselectionAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
+            var crt_index = movieGrid.SelectedIndex;
             try
             {
                 ApplyRenderTransformYToPrevious(crt_index - 1, deselectionAnimation);
@@ -106,6 +96,20 @@ namespace AnimationTest
                 item.RenderTransform = item.RenderTransform.CloneCurrentValue();
             }
             item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
+        }
+
+        private void handleBackground()
+        {
+            var fadeOutAnimation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(500));
+            fadeOutAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
+            fadeOutAnimation.Completed += new EventHandler((sender2, e2) =>
+            {
+                img_background.ImageSource = new BitmapImage((movieGrid.SelectedItem as MovieItem).BackgroundUri);
+                var fadeInAnimation = new DoubleAnimation(1, TimeSpan.FromMilliseconds(500));
+                fadeInAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+                img_background.BeginAnimation(Brush.OpacityProperty, fadeInAnimation);
+            });
+            img_background.BeginAnimation(Brush.OpacityProperty, fadeOutAnimation);
         }
 
         private void click_play(object sender, RoutedEventArgs e)
