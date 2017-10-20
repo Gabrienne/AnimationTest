@@ -21,8 +21,6 @@ namespace AnimationTest
     /// </summary>
     public partial class ModalControl : UserControl
     {
-        ListBoxItem mainWindowAnchor = null;
-
         public ModalControl()
         {
             InitializeComponent();
@@ -32,13 +30,12 @@ namespace AnimationTest
         {
             Keyboard.ClearFocus();
             var duration = TimeSpan.FromMilliseconds(1000);
-            double scaleFactor = poster.Height / mainWindowAnchor.Height;
 
             ExpandStoryBoard.Completed += new EventHandler((sender2, e2) =>
             {
                 PopupStoryboard.Completed += new EventHandler((sender3, e3) =>
                 {
-                    this.Visibility = Visibility.Hidden; //this hides the poster and triggers focus on main menu
+                    this.Visibility = Visibility.Hidden; //to hide the poster and trigger focus on main menu
                 });
 
                 //modal control expansion
@@ -50,14 +47,12 @@ namespace AnimationTest
 
         internal void AnimateIn(ListBoxItem movieListBoxItem, MainWindow mainWindow)
         {
-            mainWindowAnchor = movieListBoxItem;
             this.DataContext = movieListBoxItem.Content as MovieItem;
 
             Storyboard popUp = createPopupStoryboard(movieListBoxItem, mainWindow);
             popUp.Completed += new EventHandler((sender2, e2) =>
             {
                 //modal control expansion
-                //descriptions.Visibility = Visibility.Visible;
                 var expandStory = createExpandStoryboard();
                 expandStory.Completed += new EventHandler((sender3, e3) =>
                 {
@@ -127,7 +122,7 @@ namespace AnimationTest
         #region Members
         Storyboard PopupStoryboard = null;
         Storyboard ExpandStoryBoard = null;
-        TimeSpan defaultDuration = TimeSpan.FromMilliseconds(1200);  //animations duration
+        TimeSpan defaultDuration = TimeSpan.FromMilliseconds(1000);  //animations duration
         int posterWidth = 300;
         int posterHeight = 450;
         int modalWidth = 600;

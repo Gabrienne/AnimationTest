@@ -86,12 +86,7 @@ namespace AnimationTest
         {
             if (index > 0)
             {
-                var prev_item = getMovieFromIndex(index - 1);
-                if (prev_item.RenderTransform.IsFrozen)
-                {
-                    prev_item.RenderTransform = prev_item.RenderTransform.CloneCurrentValue();
-                }
-                prev_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
+                ApplyRenderTransformY(index - 1, animation);
             }
         }
 
@@ -99,13 +94,18 @@ namespace AnimationTest
         {
             if (index < movieGrid.Items.Count - 1)
             {
-                var next_item = getMovieFromIndex(index + 1);
-                if (next_item.RenderTransform.IsFrozen)
-                {
-                    next_item.RenderTransform = next_item.RenderTransform.CloneCurrentValue();
-                }
-                next_item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
+                ApplyRenderTransformY(index + 1, animation);
             }
+        }
+
+        private void ApplyRenderTransformY(int index, DoubleAnimation animation)
+        {
+            var item = getMovieFromIndex(index);
+            if (item.RenderTransform.IsFrozen)
+            {
+                item.RenderTransform = item.RenderTransform.CloneCurrentValue();
+            }
+            item.RenderTransform.BeginAnimation(TranslateTransform.YProperty, animation);
         }
 
         private void click_play(object sender, RoutedEventArgs e)
@@ -119,6 +119,10 @@ namespace AnimationTest
             {
                 case Key.Enter:
                     DoEnterAction();
+                    break;
+                case Key.Escape:
+                    //TODO warning?
+                    this.Close();
                     break;
             }
         }
@@ -135,7 +139,6 @@ namespace AnimationTest
                 Point fromPoint = movieListBoxItem.TransformToAncestor(this).Transform(new Point(0, 0));
                 if (movie != null)
                 {
-                   // modal.AnimateIn(movie, fromPoint, new Point(this.ActualWidth / 2, this.ActualHeight / 2));
                     modal.AnimateIn(movieListBoxItem, this);
                 }
             }

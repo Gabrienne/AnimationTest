@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:AnimationTest"
         xmlns:anim="clr-namespace:System.Windows.Media.Animation"
         mc:Ignorable="d"
-        Title="MainWindow" Background="Black">
+        Title="MainWindow" 
+        WindowStyle="None" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen" 
+        WindowState="Maximized"
+        Background="Black">
     <Grid>
         <Grid.Background>
             <ImageBrush x:Name="img_background" Stretch="UniformToFill"/>
@@ -128,7 +132,7 @@
             </ListView>
         </StackPanel>
         <Grid x:Name="paravan" Background="Black" Opacity=".4" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
-        <Border Margin="10">
+        <Border>
             <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Border>
     </Grid>
