@@ -101,7 +101,7 @@ namespace AnimationTest
             expandStory.Children.Add(posterXTranslation);
             Storyboard.SetTargetProperty(descriptionPopUp, new PropertyPath(Control.WidthProperty));
             Storyboard.SetTargetProperty(posterXTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
-            ExpandStoryBoard = expandStory;
+            ExpandStoryBoard = expandStory.Clone();
             return expandStory;
         }
 
