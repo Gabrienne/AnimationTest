@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AnimationTest.Utils;
 
 namespace AnimationTest
 {
@@ -39,10 +40,10 @@ namespace AnimationTest
                 });
 
                 //modal control expansion
-                ReverseStoryBoard(PopupStoryboard);
+                PopupStoryboard.Reverse(defaultDuration);
             });
 
-            ReverseStoryBoard(ExpandStoryBoard);
+            ExpandStoryBoard.Reverse(defaultDuration);
         }
 
         internal void AnimateIn(ListBoxItem movieListBoxItem, MainWindow mainWindow)
@@ -57,7 +58,7 @@ namespace AnimationTest
                 expandStory.Completed += new EventHandler((sender3, e3) =>
                 {
                     //ensure initial keyboard focus
-                    btn_Close.Focus();
+                    btn_Close.Focus();                   
                 });
                 expandStory.Begin();
             });
@@ -108,15 +109,6 @@ namespace AnimationTest
         private DoubleAnimation createDoubleAnimation(double from, double to, TimeSpan duration, EasingMode easeMode = EasingMode.EaseOut)
         {
             return new DoubleAnimation(from, to, duration) { EasingFunction = new CubicEase() { EasingMode = easeMode } };
-        }
-
-        private void ReverseStoryBoard(Storyboard anim)
-        {
-            anim.AutoReverse = true;
-            anim.Begin();
-            anim.Pause();
-            anim.Seek(defaultDuration);
-            anim.Resume();
         }
 
         #region Members
