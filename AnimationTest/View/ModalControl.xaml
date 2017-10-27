@@ -29,11 +29,11 @@
             <StackPanel Orientation="Horizontal" Margin="0 0 0 0" Grid.Row="2">
                 <Button x:Name="btn_Close" Width="150" Height="50" Content="Close" Click="AnimateOut" Foreground="White" Background="DarkGoldenrod"/>
                 <Button x:Name="btn_Action" Width="150" Height="50" Content="Action" Click="AnimateOut" Foreground="DarkGoldenrod" Background="DarkSlateGray"/>
+                
             </StackPanel>
         </Grid>
-
-        
         </Grid>
+    
     <UserControl.RenderTransform>
         <TransformGroup>
             <ScaleTransform x:Name="scaleTranform" ScaleX="1" ScaleY="1"/>

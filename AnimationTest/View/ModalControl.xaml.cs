@@ -71,23 +71,17 @@ namespace AnimationTest
         {
             Point fromPoint = movieListBoxItem.TransformToAncestor(mainWindow).Transform(new Point(0, 0));
             Point toPoint = new Point((mainWindow.ActualWidth - posterWidth) / 2, (mainWindow.ActualHeight - poster.Height) / 2);
-            DoubleAnimation posterXTranslation = createDoubleAnimation(fromPoint.X, toPoint.X, defaultDuration);
-            DoubleAnimation posterYTranslation = createDoubleAnimation(fromPoint.Y, toPoint.Y, defaultDuration);
             double scaleYFactor = movieListBoxItem.ActualHeight / posterHeight;
-            DoubleAnimation scaleYAnimation = createDoubleAnimation(scaleYFactor, 1, defaultDuration);
             double scaleXFactor = movieListBoxItem.ActualWidth / posterWidth;
-            DoubleAnimation scaleXAnimation = createDoubleAnimation(scaleXFactor, 1, defaultDuration);
+
 
             var popupStory = new Storyboard();
             Storyboard.SetTarget(popupStory, this);
-            popupStory.Children.Add(posterXTranslation);
-            popupStory.Children.Add(posterYTranslation);
-            Storyboard.SetTargetProperty(posterXTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
-            Storyboard.SetTargetProperty(posterYTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.Y)"));
-            popupStory.Children.Add(scaleXAnimation);
-            popupStory.Children.Add(scaleYAnimation);
-            Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleX)"));
-            Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleY)"));
+            popupStory.AddDoubleAnimation(fromPoint.X, toPoint.X, defaultDuration, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
+            popupStory.AddDoubleAnimation(fromPoint.Y, toPoint.Y, defaultDuration, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.Y)"));
+            popupStory.AddDoubleAnimation(scaleXFactor, 1, defaultDuration, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleX)"));
+            popupStory.AddDoubleAnimation(scaleYFactor, 1, defaultDuration, new PropertyPath("RenderTransform.Children[0].(ScaleTransform.ScaleY)"));
+
             PopupStoryboard = popupStory.Clone();
             return popupStory;
         }
@@ -96,19 +90,11 @@ namespace AnimationTest
         {
             var expandStory = new Storyboard();
             Storyboard.SetTarget(expandStory, this);
-            DoubleAnimation descriptionPopUp = createDoubleAnimation(posterWidth, modalWidth, defaultDuration);
-            DoubleAnimation posterXTranslation = createDoubleAnimation(translateTransform.X, translateTransform.X - posterWidth / 2, defaultDuration);
-            expandStory.Children.Add(descriptionPopUp);
-            expandStory.Children.Add(posterXTranslation);
-            Storyboard.SetTargetProperty(descriptionPopUp, new PropertyPath(Control.WidthProperty));
-            Storyboard.SetTargetProperty(posterXTranslation, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
+            expandStory.AddDoubleAnimation(posterWidth, modalWidth, defaultDuration, new PropertyPath(Control.WidthProperty));
+            expandStory.AddDoubleAnimation(translateTransform.X, translateTransform.X - posterWidth / 2, defaultDuration, new PropertyPath("RenderTransform.Children[1].(TranslateTransform.X)"));
+
             ExpandStoryBoard = expandStory.Clone();
             return expandStory;
-        }
-
-        private DoubleAnimation createDoubleAnimation(double from, double to, TimeSpan duration, EasingMode easeMode = EasingMode.EaseOut)
-        {
-            return new DoubleAnimation(from, to, duration) { EasingFunction = new CubicEase() { EasingMode = easeMode } };
         }
 
         #region Members
