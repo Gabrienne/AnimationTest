@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnimationTest"
         xmlns:anim="clr-namespace:System.Windows.Media.Animation"
+        xmlns:vlc="clr-namespace:Vlc.DotNet.Wpf;assembly=Vlc.DotNet.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" 
         WindowStyle="None" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" 
         WindowState="Maximized"
+        AllowsTransparency="False"
         Background="Black">
     <Grid>
         <Grid.Background>
@@ -31,7 +33,7 @@
                     </Button.Template>
                 </Button>
 
-                <Button Click="click_trailer" Foreground="White" Background="Gray" Opacity="0.6">
+                <Button Click="click_trailer" Foreground="White" Background="Gray" Opacity="0.5">
                     <Button.Template>
                         <ControlTemplate>
                             <Border CornerRadius="4" BorderThickness="0" Width="90" Height="40" Background="{TemplateBinding Background}">
@@ -133,7 +135,12 @@
         </StackPanel>
         <Grid x:Name="paravan" Background="Black" Opacity=".4" Visibility="{Binding ElementName=modal, Path=Visibility}"/>
         <Border>
-            <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="movieGridVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <local:ModalControl x:Name="modal" Visibility="Hidden" IsVisibleChanged="overlayVisibilityChanged" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Border>
+        <Border x:Name="vlcBorder" Background="Black" Visibility="Collapsed">
+            <vlc:VlcControl x:Name="vlcControl" Background="Blue" KeyDown="playerKeyDown"/>
+        </Border>
+            
+
     </Grid>
 </Window>

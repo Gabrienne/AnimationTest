@@ -16,11 +16,16 @@ namespace AnimationTest
     {
         public static Uri NOT_FOUND = new Uri("pack://application:,,,/Resources/ImgNotFound.jpg");
 
+        #region Constructor
+
         public MovieItem(string title)
         {
             Title = title;
         }
+        #endregion
 
+
+        #region Properties
         private string _title;
         public string Title
         {
@@ -94,5 +99,22 @@ namespace AnimationTest
                 return _backgroundUri;
             }
         }
+
+        private Uri _videoFile;
+        public Uri VideoFile
+        {
+            get
+            {
+                if (_videoFile == null)
+                {
+                    _videoFile = new Uri(@"C:\Users\gabriela\Downloads\H.264\Rogue One - A Star Wars Story - Trailer.mp4");
+                }
+                return _videoFile;
+            }
+        }
+
+
+        #endregion
+
     }
 }

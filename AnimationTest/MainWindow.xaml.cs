@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnimationTest.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vlc.DotNet.Core;
 
 namespace AnimationTest
 {
@@ -26,6 +28,8 @@ namespace AnimationTest
             InitializeComponent();
             this.DataContext = new MainViewModel();
             this.Loaded += setFocus;
+            vlcControl.MediaPlayer.VlcLibDirectory = new System.IO.DirectoryInfo(@"C:\Program Files\VideoLAN\VLC");
+            vlcControl.MediaPlayer.EndInit();
         }
 
         private void setFocus(object sender, RoutedEventArgs e)
@@ -114,7 +118,24 @@ namespace AnimationTest
 
         private void click_play(object sender, RoutedEventArgs e)
         {
-            DoEnterAction();
+            try
+            {
+                vlcControl.MediaPlayer.SetMedia((movieGrid.SelectedItem as MovieItem).VideoFile);
+
+                var popupStory = new Storyboard();
+                Storyboard.SetTarget(popupStory, vlcControl);
+                popupStory.AddDoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500), new PropertyPath(Control.OpacityProperty));
+
+                popupStory.Completed += new EventHandler((sender2, e2) =>
+                {
+                    vlcControl.MediaPlayer.Play();
+                    vlcControl.MediaPlayer.Focus();
+                });
+
+                popupStory.Begin();
+                vlcBorder.Visibility = Visibility.Visible;
+            }
+            catch { }
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -154,13 +175,29 @@ namespace AnimationTest
             //implement trailer action
         }
 
-        private void movieGridVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void overlayVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue.Equals(false))
             {
                 (movieGrid.ItemContainerGenerator.ContainerFromItem(modal.DataContext) as ListBoxItem).Visibility = Visibility.Visible;
                 setFocus(sender, new RoutedEventArgs());
             }
+        }
+
+        private void playerKeyDown(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Escape:
+                    EndPlay();
+                    break;
+            }
+        }
+
+        private void EndPlay()
+        {
+            vlcControl.MediaPlayer.Stop();
+            vlcBorder.Visibility = Visibility.Collapsed;
         }
     }
 }
