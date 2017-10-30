@@ -47,7 +47,6 @@ namespace AnimationTest
         {
             return movieGrid.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
         }
-
         
 
         private void movieSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -116,28 +115,6 @@ namespace AnimationTest
             img_background.BeginAnimation(Brush.OpacityProperty, fadeOutAnimation);
         }
 
-        private void click_play(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                vlcControl.MediaPlayer.SetMedia((movieGrid.SelectedItem as MovieItem).VideoFile);
-
-                var popupStory = new Storyboard();
-                Storyboard.SetTarget(popupStory, vlcControl);
-                popupStory.AddDoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500), new PropertyPath(Control.OpacityProperty));
-
-                popupStory.Completed += new EventHandler((sender2, e2) =>
-                {
-                    vlcControl.MediaPlayer.Play();
-                    vlcControl.MediaPlayer.Focus();
-                });
-
-                popupStory.Begin();
-                vlcBorder.Visibility = Visibility.Visible;
-            }
-            catch { }
-        }
-
         private void keyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -157,7 +134,6 @@ namespace AnimationTest
             try
             {
                 Keyboard.ClearFocus();
-
                 var movieListBoxItem = getSelectedMovieItemOrDefault();
                 var movie = movieListBoxItem.Content as MovieItem;
                 movieListBoxItem.Visibility = Visibility.Hidden;
@@ -170,9 +146,16 @@ namespace AnimationTest
             catch { }
         }
 
+        private void click_play(object sender, RoutedEventArgs e)
+        {
+            var movie = (movieGrid.SelectedItem as MovieItem).VideoFile;
+            StartPlay(movie);
+        }
+
         private void click_trailer(object sender, RoutedEventArgs e)
         {
-            //implement trailer action
+            var movie = (movieGrid.SelectedItem as MovieItem).TrailerFile;
+            StartPlay(movie);
         }
 
         private void overlayVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -198,6 +181,29 @@ namespace AnimationTest
         {
             vlcControl.MediaPlayer.Stop();
             vlcBorder.Visibility = Visibility.Collapsed;
+            setFocus(movieGrid, new RoutedEventArgs());
+        }
+
+        private void StartPlay(Uri file)
+        {
+            try
+            {
+                Keyboard.ClearFocus();
+                vlcControl.MediaPlayer.SetMedia(file);
+                var popupStory = new Storyboard();
+                Storyboard.SetTarget(popupStory, vlcControl);
+                popupStory.AddDoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500), new PropertyPath(Control.OpacityProperty));
+
+                popupStory.Completed += new EventHandler((sender2, e2) =>
+                {
+                    vlcControl.MediaPlayer.Play();
+                    vlcControl.MediaPlayer.Focus();
+                });
+
+                popupStory.Begin();
+                vlcBorder.Visibility = Visibility.Visible;
+            }
+            catch { }
         }
     }
 }

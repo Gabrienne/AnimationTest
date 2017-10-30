@@ -113,6 +113,19 @@ namespace AnimationTest
             }
         }
 
+        private Uri _trailerFile;
+        public Uri TrailerFile
+        {
+            get
+            {
+                if (_trailerFile == null)
+                {
+                    _trailerFile = new Uri(@"C:\Users\gabriela\Downloads\H.264\Rogue One - A Star Wars Story - Trailer.mp4");
+                }
+                return _trailerFile;
+            }
+        }
+
 
         #endregion
 
